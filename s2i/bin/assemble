@@ -1,0 +1,28 @@
+#!/bin/bash
+
+echo "---> Installing Thermostat Agent Plugin source ..."
+mv /tmp/src/* ./
+
+echo "---> Building Thermostat Agent Plugin ..."
+mvn clean package
+if [ $? -ne 0 ]; then
+  echo "Build failed. Abort."
+  exit 1
+fi
+
+echo "---> Installing Thermostat Agent Plugin to in ${THERMOSTAT_PLUGIN_ROOT} ..."
+PLUGIN_DISTRO_ZIP=distribution/target/*distribution*.zip
+pushd ${THERMOSTAT_PLUGIN_HOME}
+unzip ${PLUGIN_DISTRO_ZIP}
+popd
+# Run thermostat --version in order to produce basic directory
+# structure. Then fix up permissions.
+${THERMOSTAT_HOME}/bin/thermostat --version > /dev/null
+fix-permissions ${THERMOSTAT_HOME}
+fix-permissions ${USER_THERMOSTAT_HOME}
+
+echo "---> Cleaning up build artefacts ..."
+mvn clean
+
+rm -rf /tmp/hsperfdata_*
+exit 0
