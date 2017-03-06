@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# FIXME: The newest builder should not have sources there
+echo "---> Cleaning up previous sources ..."
+rm -rf ./*
+
 echo "---> Installing Thermostat Agent Plugin source ..."
 mv /tmp/src/* ./
 
@@ -10,8 +14,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "---> Installing Thermostat Agent Plugin to in ${THERMOSTAT_PLUGIN_ROOT} ..."
-PLUGIN_DISTRO_ZIP=distribution/target/*distribution*.zip
+echo "---> Installing Thermostat Agent Plugin to ${THERMOSTAT_PLUGIN_HOME} ..."
+PLUGIN_DISTRO_ZIP="$(pwd)/distribution/target/*distribution*.zip"
 pushd ${THERMOSTAT_PLUGIN_HOME}
 unzip ${PLUGIN_DISTRO_ZIP}
 popd
